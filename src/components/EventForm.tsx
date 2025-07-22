@@ -18,7 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { createEvent } from '@/lib/actions';
 import { generateDescriptionAction, generateImageAction } from '@/app/create/actions';
-import { Loader2, Sparkles, Image as ImageIcon } from 'lucide-react';
+import { Loader2, Sparkles, Image as ImageIcon, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
 
@@ -58,6 +58,17 @@ export default function EventForm() {
       image: '',
     },
   });
+  
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        form.setValue('image', reader.result as string, { shouldValidate: true });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleGenerateWithAI = async () => {
     const { name, category, targetAudience, eventDetails } = form.getValues();
@@ -259,20 +270,41 @@ export default function EventForm() {
           
           <div className="space-y-4">
             <div className="space-y-2">
-                <h3 className="text-lg font-semibold">AI Image Generation</h3>
-                <p className="text-sm text-muted-foreground">Generate a unique image for your event based on its name and category.</p>
+                <h3 className="text-lg font-semibold">Event Image</h3>
+                <p className="text-sm text-muted-foreground">Upload your own image, or generate one with AI.</p>
              </div>
 
              {image && (
                 <div className="relative aspect-video rounded-lg overflow-hidden border">
-                    <Image src={image} alt="Generated event image" layout="fill" objectFit="cover" />
+                    <Image src={image} alt="Generated event image" layout="fill" objectFit="cover" unoptimized={image.startsWith('data:')}/>
                 </div>
              )}
+            
+            <div className="grid grid-cols-2 gap-4">
+                 <FormField
+                    control={form.control}
+                    name="image" 
+                    render={() => (
+                      <FormItem>
+                        <FormControl>
+                           <Button asChild variant="outline" className="w-full">
+                                <label htmlFor="image-upload" className="cursor-pointer">
+                                  <Upload className="mr-2 h-4 w-4 text-accent" />
+                                  Upload Image
+                                  <Input id="image-upload" type="file" accept="image/*" className="sr-only" onChange={handleImageUpload} />
+                                </label>
+                            </Button>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-            <Button type="button" variant="outline" onClick={handleGenerateImage} disabled={isImageLoading} className="w-full">
-                {isImageLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ImageIcon className="mr-2 h-4 w-4 text-accent" />}
-                {image ? 'Regenerate Image' : 'Generate Image with AI'}
-            </Button>
+                <Button type="button" variant="outline" onClick={handleGenerateImage} disabled={isImageLoading} className="w-full">
+                    {isImageLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ImageIcon className="mr-2 h-4 w-4 text-accent" />}
+                    {image ? 'Regenerate Image' : 'Generate with AI'}
+                </Button>
+            </div>
           </div>
 
 

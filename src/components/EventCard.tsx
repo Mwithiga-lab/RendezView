@@ -11,6 +11,7 @@ interface EventCardProps {
 }
 
 export default function EventCard({ event }: EventCardProps) {
+  const isDataUri = event.image.startsWith('data:image');
   return (
     <Link href={`/events/${event.id}`} className="group block">
       <Card className="h-full flex flex-col overflow-hidden transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1">
@@ -20,6 +21,7 @@ export default function EventCard({ event }: EventCardProps) {
             alt={event.name}
             width={600}
             height={400}
+            unoptimized={isDataUri}
             data-ai-hint="event"
             className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
           />
