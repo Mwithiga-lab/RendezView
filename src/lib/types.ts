@@ -8,4 +8,5 @@ export interface Event {
   promotionalText?: string;
   image: string;
   targetAudience: string;
+  isMock?: boolean;
 }

@@ -19,6 +19,8 @@ export default async function EventPage({ params }: EventPageProps) {
   if (!event) {
     notFound();
   }
+  
+  const isDataUri = event.image.startsWith('data:image');
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -28,7 +30,9 @@ export default async function EventPage({ params }: EventPageProps) {
             <Image
               src={event.image}
               alt={event.name}
-              fill
+              layout="fill"
+              objectFit="cover"
+              unoptimized={isDataUri}
               data-ai-hint="event detail"
               className="object-cover"
             />

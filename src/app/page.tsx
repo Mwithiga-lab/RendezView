@@ -1,11 +1,12 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { getEvents } from '@/lib/actions';
+import { getEvents, getMockEvents } from '@/lib/actions';
 import EventCard from '@/components/EventCard';
 import EventFilters from '@/components/EventFilters';
 import { Skeleton } from '@/components/ui/skeleton';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, Star } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 type HomePageProps = {
   searchParams?: {
@@ -30,31 +31,50 @@ function EventGridSkeleton() {
   );
 }
 
-async function EventList({ query, sortBy }: { query?: string; sortBy?: string }) {
+async function UserEventList({ query, sortBy }: { query?: string; sortBy?: string }) {
   const events = await getEvents({ query, sortBy });
 
   if (events.length === 0) {
-    return (
-      <div className="text-center py-16">
-        <h2 className="text-2xl font-semibold mb-2">No Events Found</h2>
-        <p className="text-muted-foreground">Try adjusting your search or filters.</p>
-      </div>
-    );
+    return null;
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-      {events.map((event) => (
-        <EventCard key={event.id} event={event} />
-      ))}
-    </div>
+    <section>
+       <div className="flex items-center gap-2 mb-6">
+          <Star className="w-6 h-6 text-primary" />
+          <h2 className="text-2xl font-bold tracking-tight">Your Events</h2>
+        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        {events.map((event) => (
+          <EventCard key={event.id} event={event} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+
+async function ExampleEventList({ query, sortBy }: { query?: string; sortBy?: string }) {
+  const events = await getMockEvents({ query, sortBy });
+
+  return (
+     <section>
+        <div className="flex items-center gap-2 mb-6">
+          <h2 className="text-2xl font-bold tracking-tight">Examples</h2>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          {events.map((event) => (
+            <EventCard key={event.id} event={event} />
+          ))}
+        </div>
+      </section>
   );
 }
 
 export default function Home({ searchParams }: HomePageProps) {
   const query = searchParams?.query || '';
   const sortBy = searchParams?.sortBy || 'date';
-
+  
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
@@ -73,10 +93,16 @@ export default function Home({ searchParams }: HomePageProps) {
       <div className="mb-8">
         <EventFilters />
       </div>
+      
+      <div className="space-y-12">
+        <Suspense key={`user-${query}-${sortBy}`} fallback={<EventGridSkeleton />}>
+          <UserEventList query={query} sortBy={sortBy} />
+        </Suspense>
 
-      <Suspense key={query + sortBy} fallback={<EventGridSkeleton />}>
-        <EventList query={query} sortBy={sortBy} />
-      </Suspense>
+        <Suspense key={`examples-${query}-${sortBy}`} fallback={<EventGridSkeleton />}>
+          <ExampleEventList query={query} sortBy={sortBy} />
+        </Suspense>
+      </div>
     </div>
   );
 }

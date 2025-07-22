@@ -10,8 +10,9 @@ export const mockEvents: Event[] = [
     description:
       'Join the brightest minds in technology as they discuss the future of AI, blockchain, and quantum computing. A three-day event full of keynotes, workshops, and networking opportunities.',
     promotionalText: "Don't miss the biggest tech conference of the year! Get your early bird tickets now and be part of the future.",
-    image: 'https://placehold.co/600x400',
+    image: 'https://placehold.co/600x400.png',
     targetAudience: 'Professionals',
+    isMock: true,
   },
   {
     id: '2',
@@ -21,8 +22,9 @@ export const mockEvents: Event[] = [
     location: 'Metropolitan Museum, New York',
     description: 'An elegant evening of dining, dancing, and auctions to support children\'s education. All proceeds go to the "Future Minds" foundation.',
     promotionalText: 'Join us for a night of elegance and purpose. Your presence can change a child\'s life. Reserve your table today!',
-    image: 'https://placehold.co/600x400',
+    image: 'https://placehold.co/600x400.png',
     targetAudience: 'Philanthropists',
+    isMock: true,
   },
   {
     id: '3',
@@ -32,8 +34,9 @@ export const mockEvents: Event[] = [
     location: 'Green Park, London',
     description: 'Discover your new favorite band at the Indie Music Fest. A full day of live performances from emerging artists across various genres.',
     promotionalText: 'Vibes, music, and sunshine! Grab your friends and get ready for an unforgettable day at Indie Music Fest.',
-    image: 'https://placehold.co/600x400',
+    image: 'https://placehold.co/600x400.png',
     targetAudience: 'Young Adults',
+    isMock: true,
   },
   {
     id: '4',
@@ -43,8 +46,9 @@ export const mockEvents: Event[] = [
     location: 'WeWork, Berlin',
     description: 'Watch the next generation of entrepreneurs pitch their ideas to a panel of investors. Network with founders, VCs, and innovators.',
     promotionalText: 'The next unicorn might be here. Witness innovation in action at Startup Pitch Night!',
-    image: 'https://placehold.co/600x400',
+    image: 'https://placehold.co/600x400.png',
     targetAudience: 'Entrepreneurs',
+    isMock: true,
   },
   {
     id: '5',
@@ -54,8 +58,9 @@ export const mockEvents: Event[] = [
     location: 'The Louvre, Paris',
     description: 'Explore a curated collection of modern art from around the world. Featuring works by both renowned and up-and-coming artists.',
     promotionalText: 'Immerse yourself in creativity. The Modern Art Exhibition is a must-see for art lovers.',
-    image: 'https://placehold.co/600x400',
+    image: 'https://placehold.co/600x400.png',
     targetAudience: 'Art Enthusiasts',
+    isMock: true,
   },
   {
     id: '6',
@@ -65,8 +70,9 @@ export const mockEvents: Event[] = [
     location: 'Theresienwiese, Munich',
     description: 'Experience the world-famous Oktoberfest! Enjoy traditional Bavarian beer, food, music, and culture in a lively and festive atmosphere.',
     promotionalText: 'Prost! The world\'s largest beer festival is calling. Join us for an authentic Oktoberfest experience.',
-    image: 'https://placehold.co/600x400',
+    image: 'https://placehold.co/600x400.png',
     targetAudience: 'General Audience',
+    isMock: true,
   },
   {
     id: '7',
@@ -76,8 +82,9 @@ export const mockEvents: Event[] = [
     location: 'Online',
     description: 'Deep dive into advanced JavaScript concepts like closures, promises, and the event loop. This workshop is for experienced developers looking to master their skills.',
     promotionalText: 'Level up your JS skills. This intensive workshop will make you a JavaScript master. Limited spots available!',
-    image: 'https://placehold.co/600x400',
+    image: 'https://placehold.co/600x400.png',
     targetAudience: 'Developers',
+    isMock: true,
   },
   {
     id: '8',
@@ -87,7 +94,8 @@ export const mockEvents: Event[] = [
     location: 'Google Campus, London',
     description: 'A 48-hour coding marathon to build innovative solutions for social good. Collaborate with other developers, designers, and thinkers.',
     promotionalText: 'Code for a cause! Join our Community Hackathon and make a difference with your skills.',
-    image: 'https://placehold.co/600x400',
+    image: 'https://placehold.co/600x400.png',
     targetAudience: 'Developers',
+    isMock: true,
   },
 ];
