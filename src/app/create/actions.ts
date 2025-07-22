@@ -5,6 +5,7 @@ import {
   type GenerateEventDescriptionInput,
   type GenerateEventDescriptionOutput,
 } from '@/ai/flows/generate-event-description';
+import { generateEventImage, type GenerateEventImageInput } from '@/ai/flows/generate-event-image';
 import { z } from 'zod';
 
 const ActionInputSchema = z.object({
@@ -36,4 +37,18 @@ export async function generateDescriptionAction(input: GenerateEventDescriptionI
     console.error('AI Generation Error:', error);
     return { success: false, error: 'Failed to generate content from AI. Please try again.' };
   }
+}
+
+export async function generateImageAction(input: GenerateEventImageInput): Promise<{ imageUrl?: string; error?: string }> {
+    if (!input.eventName || !input.eventCategory) {
+        return { error: 'Event name and category are required for image generation.' };
+    }
+
+    try {
+        const { imageUrl } = await generateEventImage(input);
+        return { imageUrl };
+    } catch (error) {
+        console.error('AI Image Generation Error:', error);
+        return { error: 'Failed to generate image from AI. Please try again.' };
+    }
 }

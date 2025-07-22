@@ -17,9 +17,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { createEvent } from '@/lib/actions';
-import { generateDescriptionAction } from '@/app/create/actions';
-import { Loader2, Sparkles } from 'lucide-react';
+import { generateDescriptionAction, generateImageAction } from '@/app/create/actions';
+import { Loader2, Sparkles, Image as ImageIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import Image from 'next/image';
 
 const formSchema = z.object({
   name: z.string().min(3, 'Event name must be at least 3 characters.'),
@@ -32,12 +33,14 @@ const formSchema = z.object({
   eventDetails: z.string().min(10, 'Please provide some details for AI generation.'),
   description: z.string().min(10, 'Description must be at least 10 characters.'),
   promotionalText: z.string().optional(),
+  image: z.string().optional(),
 });
 
 type EventFormValues = z.infer<typeof formSchema>;
 
 export default function EventForm() {
   const [isAiLoading, setIsAiLoading] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -52,6 +55,7 @@ export default function EventForm() {
       eventDetails: '',
       description: '',
       promotionalText: '',
+      image: '',
     },
   });
 
@@ -97,11 +101,43 @@ export default function EventForm() {
     }
   };
 
+  const handleGenerateImage = async () => {
+    const { name, category } = form.getValues();
+    if (!name || !category) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please fill out Event Name and Category before generating an image.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    setIsImageLoading(true);
+    try {
+        const result = await generateImageAction({ eventName: name, eventCategory: category });
+        if (result.imageUrl) {
+            form.setValue('image', result.imageUrl, { shouldValidate: true });
+            toast({
+                title: 'Image Generated!',
+                description: 'A new event image has been generated.',
+            });
+        } else {
+            throw new Error(result.error || 'Unknown error');
+        }
+    } catch (error) {
+        toast({
+            title: 'AI Image Generation Failed',
+            description: `An error occurred: ${error instanceof Error ? error.message : String(error)}`,
+            variant: 'destructive',
+        });
+    } finally {
+        setIsImageLoading(false);
+    }
+  };
+
   const onSubmit = async (values: EventFormValues) => {
     setIsSubmitting(true);
     try {
       await createEvent(values);
-      // The redirect is handled by the server action
       toast({
         title: 'Event Created Successfully!',
         description: 'You will be redirected shortly.',
@@ -115,6 +151,8 @@ export default function EventForm() {
       setIsSubmitting(false);
     }
   };
+  
+  const image = form.watch('image');
 
   return (
     <Form {...form}>
@@ -189,33 +227,54 @@ export default function EventForm() {
             />
           </div>
           
-          <div className="space-y-2">
-            <h3 className="text-lg font-semibold">AI Content Assistant</h3>
-            <p className="text-sm text-muted-foreground">Provide some key details, and let our AI craft a compelling description for you.</p>
+          <div className="space-y-4">
+             <div className="space-y-2">
+                <h3 className="text-lg font-semibold">AI Content Assistant</h3>
+                <p className="text-sm text-muted-foreground">Provide some key details, and let our AI craft a compelling description for you.</p>
+             </div>
+
+              <FormField
+                control={form.control}
+                name="eventDetails"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Event Details for AI</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="List speakers, topics, activities, what makes it special, etc." {...field} rows={4} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <Button type="button" variant="outline" onClick={handleGenerateWithAI} disabled={isAiLoading} className="w-full">
+                {isAiLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Sparkles className="mr-2 h-4 w-4 text-accent" />
+                )}
+                Generate Description
+              </Button>
+          </div>
+          
+          <div className="space-y-4">
+            <div className="space-y-2">
+                <h3 className="text-lg font-semibold">AI Image Generation</h3>
+                <p className="text-sm text-muted-foreground">Generate a unique image for your event based on its name and category.</p>
+             </div>
+
+             {image && (
+                <div className="relative aspect-video rounded-lg overflow-hidden border">
+                    <Image src={image} alt="Generated event image" layout="fill" objectFit="cover" />
+                </div>
+             )}
+
+            <Button type="button" variant="outline" onClick={handleGenerateImage} disabled={isImageLoading} className="w-full">
+                {isImageLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ImageIcon className="mr-2 h-4 w-4 text-accent" />}
+                {image ? 'Regenerate Image' : 'Generate Image with AI'}
+            </Button>
           </div>
 
-          <FormField
-            control={form.control}
-            name="eventDetails"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Event Details for AI</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="List speakers, topics, activities, what makes it special, etc." {...field} rows={4} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <Button type="button" variant="outline" onClick={handleGenerateWithAI} disabled={isAiLoading} className="w-full">
-            {isAiLoading ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Sparkles className="mr-2 h-4 w-4 text-accent" />
-            )}
-            Generate with AI
-          </Button>
 
           <FormField
             control={form.control}
@@ -247,8 +306,8 @@ export default function EventForm() {
 
         </div>
 
-        <Button type="submit" disabled={isSubmitting} size="lg" className="w-full">
-          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        <Button type="submit" disabled={isSubmitting || isImageLoading} size="lg" className="w-full">
+          {(isSubmitting || isImageLoading) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Create Event
         </Button>
       </form>

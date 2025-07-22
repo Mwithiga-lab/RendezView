@@ -38,7 +38,7 @@ export async function getEventById(id: string): Promise<Event | undefined> {
   return events.find((event) => event.id === id);
 }
 
-export async function createEvent(eventData: Omit<Event, 'id' | 'image'> & { image?: string }) {
+export async function createEvent(eventData: Omit<Event, 'id'> & { image?: string }) {
   await new Promise(resolve => setTimeout(resolve, 1000));
   const newEvent: Event = {
     ...eventData,
