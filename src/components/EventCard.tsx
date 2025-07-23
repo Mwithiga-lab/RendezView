@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,8 +20,8 @@ export default function EventCard({ event }: EventCardProps) {
           <Image
             src={event.image}
             alt={event.name}
-            width={600}
-            height={400}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             unoptimized={isDataUri}
             data-ai-hint="event"
             className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
