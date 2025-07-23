@@ -12,7 +12,6 @@ RendezView is a modern, intuitive web application designed to streamline event c
 -   **🖼️ AI Image Generation:** Create unique, eye-catching event images with a single click, based on the event's name and category.
 -   **📤 Image Upload:** Flexibility to upload your own custom images for a personal touch.
 -   **🔍 Event Search & Sort:** Quickly find events using a keyword search or sort them by date or name.
--   **サンプルと作成済みイベントの分離** ユーザーが作成したイベントとサンプルイベントを明確に区別して表示します。
 
 ### 🚀 How to Run
 
@@ -62,7 +61,7 @@ RendezView is a modern, intuitive web application designed to streamline event c
 
 ### 👤 Author
 
-**You!** (This project was created with the assistance of an AI coding partner).
+**Kevin Mwithiga** (This project was created with the assistance of an AI coding partner, Youtube and Google Search).
 
 ### 📄 License
 
