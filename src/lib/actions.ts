@@ -7,6 +7,13 @@ import type { Event } from './types';
 
 // This is a mock database. In a real app, you'd use a database.
 let events: Event[] = [];
+if (process.env.NODE_ENV === 'development') {
+  if (!(global as any).events) {
+    (global as any).events = [];
+  }
+  events = (global as any).events;
+}
+
 
 async function filterAndSortEvents(eventList: Event[], params?: { query?: string; sortBy?: string }): Promise<Event[]> {
     await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
@@ -38,7 +45,7 @@ export async function getEvents(params?: { query?: string; sortBy?: string }): P
   return filterAndSortEvents(events, params);
 }
 
-export async function getMockEvents(params?: { query?: string; sortBy?: string }): Promise<Event[]> {
+export async function getMockEvents(params?: { query?:string; sortBy?: string }): Promise<Event[]> {
     return filterAndSortEvents(mockEvents, params);
 }
 
@@ -49,7 +56,8 @@ export async function getEventById(id: string): Promise<Event | undefined> {
 }
 
 export async function createEvent(eventData: Omit<Event, 'id'> & { image?: string }) {
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  // removing the timeout to make it faster
+  // await new Promise(resolve => setTimeout(resolve, 1000));
   const newEvent: Event = {
     ...eventData,
     id: `user-${(events.length + 1)}-${Date.now()}`,
