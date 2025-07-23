@@ -147,20 +147,14 @@ export default function EventForm() {
 
   const onSubmit = async (values: EventFormValues) => {
     setIsSubmitting(true);
-    try {
-      await createEvent(values);
-      toast({
-        title: 'Event Created Successfully!',
-        description: 'You will be redirected shortly.',
-      });
-    } catch (error) {
+    await createEvent(values).catch((error) => {
       toast({
         title: 'Submission Failed',
         description: `An error occurred: ${error instanceof Error ? error.message : String(error)}`,
         variant: 'destructive',
       });
       setIsSubmitting(false);
-    }
+    });
   };
   
   const image = form.watch('image');
